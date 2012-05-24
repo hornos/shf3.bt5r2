@@ -1,0 +1,9 @@
+netmgr_host_host=eth0
+netmgr_host_elan=eth1
+netmgr_host_wlan=eth2
+netmgr_self_wlan=wlan0
+
+netmgr_self_send=wlan0
+netmgr_self_recv=wlan1
+
+

@@ -1,0 +1,61 @@
+#!/bin/bash
+source $(dirname ${BASH_SOURCE})/../../shf3/lib/header
+import gui
+
+function help/netmgr() {
+  cat << EOF
+Network Manager
+
+Recommended setup:
+  VBox Network      Meta       OSX host  BT5 guest
+  Host-only         host_host  vboxnet0  eth0
+  Bridged Ethernet  host_elan  en0       eth1
+  Bridged AirPort   host_wlan  en1       eth2
+  Filtered USB      self_wlan  -         wlan0 (self_send)
+  Filtered USB      -          -         wlan1 (self_recv)
+
+EOF
+  exit 1
+}
+
+map="${gdn}/../etc/${gbn}.devmap"
+if ! readable "${devmap}" ; then
+  msg "Device mapping not found: ${devmap}"
+  exit 1
+fi
+source "${devmap}"
+
+### main
+dst=${1:-host}
+shift
+act=${1:-down}
+dev=${netmgr_host_host}
+
+case ${dst} in
+  host|elan|wlan)
+    dev="netmgr_host_${dst}"
+    dev=${!dev}
+  ;;
+  wifi)
+    dev=${netmgr_self_wlan}
+  ;;
+  send|recv)
+    dev="netmgr_self_${dst}"
+    dev=${!dev}
+  ;;
+  *)
+    msg "Interface not found: ${dst}"
+    exit 1
+  ;;
+esac
+
+# mac spoof
+
+# dhcp ? static ? manual
+if test "${_opt}" = "down"; then
+  ifconfig ${_dev} down
+else
+  if${_opt} ${_dev}
+fi
+
+# channel router
